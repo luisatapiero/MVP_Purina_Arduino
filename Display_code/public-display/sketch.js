@@ -68,9 +68,13 @@ function draw() {
         break;
 
         case 2:
-            nextScreen = true;
+            
             imageMode(CORNER);
             image(screen2, 0, 0);
+            if (frameCount % 240 === 0){
+                nextScreen = true;
+
+            }
             
         break;
 
@@ -88,12 +92,14 @@ function draw() {
         break;
 
         case 4:
+            imageMode(CORNER);
             image(screen4, 0, 0);
             fill(255);
-            textSize(25);
-            text('GAME OVER 😔', 340, 300);
+           // textSize(25);
+           // text('GAME OVER 😔', 340, 300);
             textSize(14);
-            text('Tu puntuación fue: '+puntos, 340, 350);
+            fill(0);
+            text(puntos, 305, 220);
         break;
 
         case 5:
@@ -132,6 +138,7 @@ function draw() {
             if(positions.b == 0){
                 moveStateX = 'PRESSED';
                 console.log('PRESIONO');
+
                 passScreen();
             };
             
@@ -313,7 +320,7 @@ function touchBadFood(){
                 console.log('Perdiste')
                 badFood = [];
                 goodFood = [];
-                screenNum = 2;
+                screenNum = 4;
             }
         }
     }
@@ -339,7 +346,7 @@ function touchGoodFood(){
 }
 
 function paintPuntos(){
-    fill(255);
-    text('Puntuación '+puntos, 360, 50);
+    fill(0);
+    text('Puntuación '+puntos, 380, 70);
 }
 
