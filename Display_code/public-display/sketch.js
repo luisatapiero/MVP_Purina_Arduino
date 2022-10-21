@@ -347,6 +347,12 @@ function touchGoodFood(){
 
 function paintPuntos(){
     fill(0);
-    text('Puntuación '+puntos, 380, 70);
+    textAlign(CENTER);
+    text(puntos, 450, 60);
 }
+
+socket.on('mupi-react-to-change', screen => {
+    screenNum++;
+    console.log("Screen has been changed");
+})
 

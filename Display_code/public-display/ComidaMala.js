@@ -3,7 +3,7 @@ class ComidaMala {
         this.x = x;
         this.y = y;
         this.radio = 30;
-        this.vel = 10;
+        this.vel = 15;
         this.imageFood = imageFood;
     }
 
@@ -11,7 +11,7 @@ class ComidaMala {
         //fill(255,0,0);
         //ellipseMode(CENTER);
         imageMode(CENTER);
-        image(this.imageFood, this.x, this.y, 60, 60);
+        image(this.imageFood, this.x, this.y, 50, 50);
         //ellipse(this.x, this.y, this.radio, this.radio);
         //imageMode(CENTER);
         //image(this.imageFood, this.x, this.y, 60, 60);

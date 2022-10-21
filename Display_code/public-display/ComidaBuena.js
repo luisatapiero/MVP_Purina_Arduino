@@ -4,7 +4,7 @@ class ComidaBuena {
         this.x = x;
         this.y = y;
         this.radio = 30;
-        this.vel = 5;
+        this.vel = 10;
         this.imageFood = imageFood;
 
         
@@ -13,9 +13,9 @@ class ComidaBuena {
     draw() {
         //fill(0, 255, 0);
         //ellipseMode(CENTER);
-        ellipse(this.x, this.y, this.radio, this.radio);
+        //ellipse(this.x, this.y, this.radio, this.radio);
         imageMode(CENTER);
-        image(this.imageFood, this.x, this.y, 60, 60);
+        image(this.imageFood, this.x, this.y, 50, 50);
         //circe(this.x, this.y, 60, 60);
         //this.move();
     }

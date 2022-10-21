@@ -49,6 +49,11 @@ ioServer.on('connection', (socket) => {
    socket.on('screensController', (pantalla) => {
     console.log('controler', pantalla)
     socket.broadcast.emit('screensController', pantalla);
+
+    socket.on('app-change-mupi-screen', screen => {
+        console.log(`Screen: ${screen}`);
+        socket.broadcast.emit('mupi-react-to-change', 1);
+    });
     });
 
 });
@@ -69,7 +74,7 @@ parser.on('data', (data) => {
     // Create the array
     let dataArray = data.split(' ');
 
-console.log(data)
+console.log(data);
 
     // Parse the Strings to Integer
     characterMessage.x = parseInt(dataArray[0]);
