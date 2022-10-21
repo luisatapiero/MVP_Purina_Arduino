@@ -11,10 +11,11 @@ class ComidaBuena {
     }
 
     draw() {
-        fill(0, 255, 0);
-        ellipseMode(CENTER);
+        //fill(0, 255, 0);
+        //ellipseMode(CENTER);
         ellipse(this.x, this.y, this.radio, this.radio);
         imageMode(CENTER);
+        image(this.imageFood, this.x, this.y, 60, 60);
         //circe(this.x, this.y, 60, 60);
         //this.move();
     }

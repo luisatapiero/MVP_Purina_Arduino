@@ -8,9 +8,11 @@ class ComidaMala {
     }
 
     draw() {
-        fill(255,0,0);
-        ellipseMode(CENTER);
-        ellipse(this.x, this.y, this.radio, this.radio);
+        //fill(255,0,0);
+        //ellipseMode(CENTER);
+        imageMode(CENTER);
+        image(this.imageFood, this.x, this.y, 60, 60);
+        //ellipse(this.x, this.y, this.radio, this.radio);
         //imageMode(CENTER);
         //image(this.imageFood, this.x, this.y, 60, 60);
         //this.move();

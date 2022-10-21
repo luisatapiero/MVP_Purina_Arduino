@@ -2,24 +2,37 @@ const express = require('express');
 const { Server } = require('socket.io');
 const { SerialPort, ReadlineParser } = require('serialport');
 const app = express();
-const httpServer = app.listen(5050);
-const ioServer = new Server(httpServer);
+const PORT = 5050; // No cambiar
+//const SERVER_IP = '172.30.228.225'; // Cambiar por la IP del computador
+const SERVER_IP = '192.168.1.19';
+//const httpServer = app.listen(PORT);
+//const ioServer = new Server(httpServer);
 
-const staticDisplay = express.static('public-display');
-app.use('/display', staticDisplay);
+//const staticDisplay = express.static('public-display');
+//app.use('/display', staticDisplay);
 app.use(express.json());
+app.use('/app', express.static('public-app')); //están sirviendo los endopoints de manera estatica
+app.use('/display', express.static('public-display'));
+
+const httpServer = app.listen(PORT, () => { //app listen es cuando activa el servidor. EL proyecto empieza a escuchar el puerto que le indicaron
+    console.log(`http://${SERVER_IP}:${PORT}/app`);
+    console.log(`http://${SERVER_IP}:${PORT}/display`);
+});
+
+const ioServer = new Server(httpServer, { path: '/real-time' });
+
 
 let characterMessage = {
     x: 0,
     y: 0
 };
 
-app.get('/test', (req, res) => {
+/*app.get('/test', (req, res) => {
     console.log(req.body);
     res.send({
         m: 'Okay'
     });
-});
+});*/
 
 ioServer.on('connection', (socket) => {
     console.log(`Connected`, socket.id);
@@ -61,6 +74,7 @@ console.log(data)
     // Parse the Strings to Integer
     characterMessage.x = parseInt(dataArray[0]);
     characterMessage.y = parseInt(dataArray[1]);
+    characterMessage.b = parseInt(dataArray[2]);
     //console.log(characterMessage);
 
     // Emit the message using WebSocket to the client
@@ -70,65 +84,25 @@ console.log(data)
     
 });
 
-//=============================================
-//============================================= Week 9 demo:
-//=============================================
 
-/*
-// Import de SerialPort package
-const {
-    SerialPort,
-    ReadlineParser
-} = require('serialport');
-// Set the rules for the serial communication
-const protocolConfiguration = {
-    path: '/dev/cu.usbmodem142101',
-    baudRate: 9600
-}
-// Opens a port
-const port = new SerialPort({
-    path: '/dev/cu.usbmodem142101',
-    baudRate: 9600
+//---------------------------- Database local 
+let users = []; // user structure =  {name: ‘’, email: ‘’}
+
+
+let usuarios = {};
+
+
+//---------------------------- Endpoints del API
+
+app.post('/send-user-data',(request, response) =>{ //creamos un API rest, es crear endpoints que podemos entrar desde nuestro cliente
+//dependiendo de la información que se mande. El post crea información nueva en la DB
+    usuarios = request.body; //se cambia la variable usuarios
+    console.log('Post! from client', request.body);
 });
-/*
-//--------------------------------------- 1- Read without parsing
-// Read data from Serial Buffer
-/*
-port.on('data', (data) => {
-    console.log(data);
-})
-*/
 
-//--------------------------------------- 2- 4- Reading after parsing
-/*
-const parser = port.pipe(new ReadlineParser);
-parser.on('data', (data) => {
-    console.log(data);
-})
-*/
 
-//--------------------------------------- 3- From String to Integer
-/*
-const parser = port.pipe(new ReadlineParser);
-parser.on('data', (data) => {
-    let integerData = parseInt(data);
-    console.log(integerData);
+app.get('/send-user-data',(request, response) =>{
+
+    console.log("help");
+    response.send(usuarios); //envia los datos. SI entramos a al ruta '/send-user-data' nos llegará el json de usuarios
 });
-*/
-
-//--------------------------------------- 5- Creating an Array
-/*
-const parser = port.pipe(new ReadlineParser);
-parser.on('data', (data) => {
-    // Divide the String "A B C" by " " to create an Array
-    let dataArray = data.split(' ');
-    // Remove the last item: \r
-    dataArray.splice(-1);
-    console.log(dataArray);
-    // Parse all the Springs in Integers
-    let dataArrayInt = dataArray.map(i =>
-        parseInt(i)
-    );
-    console.log(dataArrayInt);
-});
-*/

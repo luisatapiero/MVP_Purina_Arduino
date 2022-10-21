@@ -1,6 +1,11 @@
 //const { text } = require("express");
+const NGROK = `https://${window.location.hostname}`;
+let socket = io(NGROK, {
+    path: '/real-time'
+});
+console.log('Server IP: ', NGROK);
 
-let socket = io();
+//let socket = io();
 
 let badFood = [];
 let goodFood = [];
@@ -9,7 +14,7 @@ let character = {
     x: 0,
     y: 0
 };
-let speed = 2;
+let speed = 3;
 let gameOver = false;
 let screenNum = 1;
 let moveStateX = '';
@@ -19,7 +24,6 @@ let screen2;
 let screen3;
 let screen4;
 let screen5;
-let screen6;
 
 let meat;
 let bowl;
@@ -30,6 +34,8 @@ let grapes;
 let avocado;
 let chocolate;
 let onion;
+
+let nextScreen;
 
 function setup() {
     frameRate(60);
@@ -44,29 +50,54 @@ function setup() {
     puntos = 0;
 
     preloadImages();
+
+    nextScreen = true;
 }
 
 function draw() {
     background(0);
     fill(255);
     noStroke();
+    imageMode(CENTER);
     //ellipse(character.x, character.y, 50, 50);
     switch (screenNum) {
         case 1:
+            imageMode(CORNER);
+            image(screen1, 0, 0);
+            
+        break;
+
+        case 2:
+            nextScreen = true;
+            imageMode(CORNER);
+            image(screen2, 0, 0);
+            
+        break;
+
+        case 3:
+            imageMode(CORNER);
+            image(screen3, 0, 0);
+            imageMode(CENTER);
             createFood();
             paintFood();
             paintDogBowl();
             touchBadFood();
             touchGoodFood();
             paintPuntos();
-            break;
+            
+        break;
 
-      case 2:
+        case 4:
+            image(screen4, 0, 0);
             fill(255);
             textSize(25);
             text('GAME OVER 😔', 340, 300);
             textSize(14);
             text('Tu puntuación fue: '+puntos, 340, 350);
+        break;
+
+        case 5:
+            image(screen5, 0, 0);
         break;
     
         default:
@@ -97,9 +128,24 @@ function draw() {
             if(positions.x > 40 && positions.x < 60){
                 moveStateX = '';
             };
+
+            if(positions.b == 0){
+                moveStateX = 'PRESSED';
+                console.log('PRESIONO');
+                passScreen();
+            };
             
+
         
         });
+
+function passScreen(){
+    if (nextScreen){
+        screenNum++;
+        console.log('La pantalla es '+screenNum);
+        nextScreen = false;
+    }
+}
 
     
 
@@ -111,7 +157,7 @@ function preloadImages() {
     screen3 = loadImage('img/MUPI-screen3.png');
     screen4 = loadImage('img/MUPI-screen4.png');
     screen5 = loadImage('img/MUPI-screen5.png');
-    screen6 = loadImage('img/MUPI-screen6.png');
+    
     bowl = loadImage('img/bowl.png');
     meat = loadImage('img/carne.png');
     chicken = loadImage('img/pollo.png');
@@ -197,8 +243,11 @@ function paintDogBowl() {
     imageMode(CENTER);
     fill(255,255,255);
     //stroke(255);
-    rectMode(CENTER);
-    rect(character.x, 690,30,30);
+    //rectMode(CENTER);
+    //rect(character.x, 690,30,30);
+
+    imageMode(CENTER);
+    image(bowl, character.x,620,100,100);
 
     switch(moveStateX){
         case 'RIGHT':
@@ -206,6 +255,13 @@ function paintDogBowl() {
             break;
         case 'LEFT':
             character.x -= speed;
+            break;
+        case 'PRESSED':
+            if (nextScreen){
+                screenNum++;
+                console.log('La pantalla es '+screenNum);
+                nextScreen = false;
+            }
             break;
         default:
             break;
@@ -239,7 +295,9 @@ function removeFood() {
     for (let i = 0; i < goodFood.length; i++) {
         
         if (goodFood[i].getY > 770 == true) {
+            puntos = puntos - 100;
             goodFood.shift(i);
+            
         }
     }
 
@@ -251,7 +309,7 @@ function touchBadFood(){
         for (let i = 0; i < badFood.length; i++) {
             let badFoodX = badFood[i].getX;
             let badFoodY = badFood[i].getY;
-            if (dist(badFoodX, badFoodY, character.x, 690)<50) {
+            if (dist(badFoodX, badFoodY, character.x, 690)<40) {
                 console.log('Perdiste')
                 badFood = [];
                 goodFood = [];
@@ -270,7 +328,7 @@ function touchGoodFood(){
             
             let goodFoodX = goodFood[i].getX;
             let goodFoodY = goodFood[i].getY;
-            if (dist(goodFoodX, goodFoodY, character.x, 690)<50) {
+            if (dist(goodFoodX, goodFoodY, character.x, 690)<55) {
                 console.log('toca comida buena');
                 goodFood.splice(i,1);
                puntos = puntos + 100;
